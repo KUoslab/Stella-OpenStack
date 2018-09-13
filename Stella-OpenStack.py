@@ -3,7 +3,7 @@ import logging
 import os
 
 # for API server
-from flask import Flask
+from flask import Flask, jsonify, request, abort
 from flask_restful import Resource, Api
 
 import connect_openstack
@@ -31,7 +31,7 @@ class VM_info:
     # _hypervisor_ip = " "
 
     def print_all(self):
-        print(self._list_vms)
+        return self._list_vms
 
     def print_num(self):
         return len(self._list_vms) + 1
@@ -85,13 +85,37 @@ class Stella_OpenStack(Resource):
         self.logger.info("STELLA: Signal {0}".format(signum))
         self.logger.info("STELLA: STOP")
 
-    # Stella-OpenStack API functions
-    def API_setSLA(self):
 
+# global variables
+hypervisors = hypervisor_info
+vms = VM_info
 
 # Stella-OpenStack API list
-api.add_resource()
-api.add_resource()
+# /stella : Check status of Stella scheduler and Stella-OpenStack
+# /stella/vms : Returns the list of VMs and information of each VMs
+# /stella/hypervisor : Returns the list of VMs and information of each VMs
+@app.route('/stella/', methods=['GET'])
+def StellaAPI_Status():
+    return "Stella-OpenStack is ON"
+
+
+@app.route('/stella/vms', methods=['GET'])
+def StellaAPI_listVMs():
+    return jsonify(vms.print_all(vms))
+
+
+@app.route('/stella/hypervisor', methods=['POST'])
+def StellaAPI_SearchHypervisorsByName():
+    if not request.json or not 'name' in request.json:
+        abort(400)
+    else:
+        _name = request.json['name']
+        # hypervisors.get_data(hypervisors, _name)
+        return jsonify({'hypervisor_ip': hypervisors.get_data(hypervisors, _name)})
+
+
+#
+# Stella-OpenStack API list end
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -155,7 +179,7 @@ if __name__ == '__main__':
 
     # Make key-value storage for hypervisor
     # e.g. hypervisor name: hypervisor ip
-    hypervisors = hypervisor_info
+    #hypervisors = hypervisor_info
     # print(hypervisors.print_num(hypervisors))
     count = 0
     for index in list_hypervisor_name:
@@ -168,8 +192,6 @@ if __name__ == '__main__':
     # print(hypervisors.print_num(hypervisors))
 
     # Storing VM information
-
-    vms = VM_info
 
     print("VM information")
     for VM in conn.compute.servers():
