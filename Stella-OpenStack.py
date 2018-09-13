@@ -1,0 +1,225 @@
+import argparse
+import logging
+import os
+
+# for API server
+from flask import Flask
+from flask_restful import Resource, Api
+
+import connect_openstack
+
+app = Flask(__name__)
+api = Api(app)
+#
+
+"""
+
+Stella-OpenStack Conment main file
+                                         
+- by jmlim@os.korea.ac.kr
+
+"""
+
+
+class VM_info:
+    _list_vms = {}
+
+    # _vm_name = " "
+    # _instance_name = " "
+    # _project_id = " "
+    # _hypervisor_name = " "
+    # _hypervisor_ip = " "
+
+    def print_all(self):
+        print(self._list_vms)
+
+    def print_num(self):
+        return len(self._list_vms) + 1
+
+    def set_info(self, _vm_name, _instance_name, _project_id, _hypervisor_name, _hypervisor_ip):
+        # Key for VMs list
+        num = len(self._list_vms)
+        # Add to VMs list
+        # self._list_vms[num] = [_vm_name, _instance_name, _project_id, _hypervisor_name, _hypervisor_ip]
+        self._list_vms[num] = {'vm_name': _vm_name, 'instance_name': _instance_name, 'project_id': _project_id,
+                               'hypervisor_name': _hypervisor_name, 'hypervisor_ip': _hypervisor_ip}
+        # _tmp = [ _vm_name, _instance_name, _project_id, _hypervisor_name, _hypervisor_ip]
+        # self._vm_info.append(_tmp)
+        return len(self._list_vms)
+
+
+#    def get_info(self, _vm_name ):
+#        _tmp =
+
+class hypervisor_info:
+    _list_hypervisor = {}
+
+    def set_data(self, _name, _ip):
+        self._list_hypervisor[_name] = _ip
+
+    def get_data(self, _name):
+        return self._list_hypervisor[_name]
+
+
+class Stella_OpenStack(Resource):
+
+    def __init__(self, log_file=None):
+        logging.basicConfig(level=logging.INFO, format='%(message)s')
+        self.logger = logging.getLogger("Stella-OpenStack START")
+        self.log_file = log_file
+
+        if log_file:
+            self.log_handler = logging.FileHandler(self.log_file)
+            self.logger.addHandler(self.log_handler)
+
+        self.__stop = False
+
+        # self.signal(signal.SIGINT, self.stop)
+        # self.signal(signal.SIGTERM, self.stop)
+
+    def main(self):
+        self.logger.info("STELLA: PID {0}".format(os.getpid()))
+
+    def stop(self, signum, frame):
+        self.__stop = True
+        self.logger.info("STELLA: Signal {0}".format(signum))
+        self.logger.info("STELLA: STOP")
+
+    # Stella-OpenStack API functions
+    def API_setSLA(self):
+
+
+# Stella-OpenStack API list
+api.add_resource()
+api.add_resource()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--log", help="log filename", default=None)
+    parser.add_argument("--pid", help="pid filename", default='/tmp/stella.pid')
+    args = parser.parse_args()
+
+    # fork to make deamin process
+    # pid = os.fork()
+    # if pid > 0:
+    # for parent process
+
+    #    exit(0)
+
+    # else:
+    # For children process
+    #    os.chdir('/')
+    #    os.setsid()
+    #    os.umask(0)
+
+    #    pid = os.fork()
+    #    if pid > 0:
+    #        exit(0)
+
+    #    else:
+    #        sys.stdout.flush()
+    #        sys.stderr.flush()
+
+    #        si = open(os.devnull, 'r')
+    #        so = open(os.devnull, 'a+')
+    #        se = open(os.devnull, 'a+')
+
+    #        os.dup2(si.fileno(), sys.stdin.fileno())
+    #        os.dup2(so.fileno(), sys.stdout.fileno())
+    #        os.dup2(se.fileno(), sys.stderr.fileno())
+
+    #        with open(args.pid, "w") as pid_file:
+    #            pid_file.write(str(os.getpid()))
+
+    #        Stella = Stella_OpenStack(args.log)
+    #        code = Stella.main()
+    # exit(code)
+
+    Stella = Stella_OpenStack(args.log)
+    code = Stella.main()
+
+    Stella.logger.info("STELLA: connect to Stella-cloud")
+    conn = connect_openstack.Opts.create_connection_from_config()
+
+    Stella.logger.info("STELLA: listing hypervisor")
+
+    list_hypervisor_name = []
+    list_hypervisor_ip = []
+    # list_hypervisor = {}
+
+    for HYPERVISOR in conn.compute.hypervisors():
+        list_hypervisor_name.append(HYPERVISOR.name)
+
+    for HYPERVISOR in conn.compute.hypervisors(list_hypervisor_name):
+        list_hypervisor_ip.append(HYPERVISOR.host_ip)
+
+    # Make key-value storage for hypervisor
+    # e.g. hypervisor name: hypervisor ip
+    hypervisors = hypervisor_info
+    # print(hypervisors.print_num(hypervisors))
+    count = 0
+    for index in list_hypervisor_name:
+        # print(index)
+        list_hypervisor = {list_hypervisor_name[count]: list_hypervisor_ip[count]}
+        hypervisors.set_data(hypervisors, list_hypervisor_name[count], list_hypervisor_ip[count])
+        count = count + 1
+    # for debugging
+    # hypervisors.print_all(hypervisors)
+    # print(hypervisors.print_num(hypervisors))
+
+    # Storing VM information
+
+    vms = VM_info
+
+    print("VM information")
+    for VM in conn.compute.servers():
+        # print("VM_NAME: " + VM.name)
+        # print("INSTANCE_NAME: " + VM.instance_name)
+        # print("PROJECT_ID: " + VM.project_id)
+        # print("HYPERVISOR_HOST: " + VM.hypervisor_hostname)
+        # print("HOST_ID: " + VM.host_id)
+        # print(vms.print_num(vms))
+        ip = hypervisors.get_data(hypervisors, VM.hypervisor_hostname)
+        vms.set_info(vms, VM.name, VM.instance_name, VM.project_id, VM.hypervisor_hostname, ip)
+
+    # vms.print_all(vms)
+
+    #    print(VM)
+
+    # hypervisor_list_name = " "
+    # hypervisor_list_ip = " "
+
+    # Get hypervisor list AND ip address
+    # for HYPERVISOR in conn.compute.hypervisors():
+    #    tmp_hypervisor['name'] = HYPERVISOR.name
+    #    hypervisor_list_name =
+    #
+    # for HYPERVISOR in conn.compute.hypervisors(hypervisor_list_name):
+    #    hypervisor_list_ip = HYPERVISOR.host_ip
+
+    # for Debugging
+
+    # print(hypervisor_list_name)
+    # print(hypervisor_list_ip)
+
+    # print("VM information")
+    # for VM in conn.compute.servers():
+    #    print("VM_NAME: " + VM.name)
+    #    print("INSTANCE_NAME: " + VM.instance_name)
+    #    print("PROJECT_ID: " + VM.project_id)
+    #    print("HYPERVISOR_HOST: " + VM.hypervisor_hostname)
+    #    print("HOST_ID: " + VM.host_id)
+    #    print(VM)
+
+    # for HYPERVISOR in conn.compute.hypervisors("DevStack"):
+    #    print(HYPERVISOR)
+
+    # print("tenant information: ")
+    # for HYPERVISOR in conn.identity.projects():
+    #    print(HYPERVISOR)
+
+    # VM_info = VM_info.set_info()
+    # print(VM_info)
+
+    # run API server
+    app.run(debug=True)
