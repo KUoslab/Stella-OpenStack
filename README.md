@@ -4,8 +4,8 @@ This page is Stella-OpenStack code repository.
 Stella-OpenStack support Stella VM scheduler to set performance SLA in OpenStack IaaS clouds. 
 
 Visit our project page for detailed information about Stella project.
-Stella Project page: http://stella.korea.ac.kr
-GitHub page: https://github.com/KUoslab
+
+Contect information is below in this README.md file.
 
 ## Stella-OpenStack APIs
 Stella-OpenStack APIs(a.k.s Stella APIs) provide access Stella-OpenStack functions.
@@ -22,3 +22,5 @@ The list of Stella APIs is below.
 email: starlab@os.korea.ac.kr
 
 Stella Project page: http://stella.korea.ac.kr
+
+GitHub page: https://github.com/KUoslab
