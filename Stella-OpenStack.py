@@ -93,7 +93,7 @@ vms = VM_info
 # Stella-OpenStack API list
 # /stella : Check status of Stella scheduler and Stella-OpenStack
 # /stella/vms : Returns the list of VMs and information of each VMs
-# /stella/hypervisor : Returns the list of VMs and information of each VMs
+# /stella/hypervisor : Returns Hypervisor IP address
 @app.route('/stella/', methods=['GET'])
 def StellaAPI_Status():
     return "Stella-OpenStack is ON"
