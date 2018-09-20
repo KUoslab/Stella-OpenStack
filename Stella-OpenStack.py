@@ -167,6 +167,7 @@ vms = VM_info
 # Stella-OpenStack API list
 # /stella : Check status of Stella scheduler and Stella-OpenStack
 # /stella/vms : Returns the list of VMs and information of each VMs
+# /stella/vms/sla: Set SLA for VM. Use instance name in horizon as a Input
 # /stella/hypervisor : Returns Hypervisor IP address
 @app.route('/stella/', methods=['GET'])
 def StellaAPI_Status():
@@ -175,7 +176,6 @@ def StellaAPI_Status():
 @app.route('/stella/vms', methods=['GET'])
 def StellaAPI_listVMs():
     return jsonify(vms.print_all(vms))
-
 
 @app.route('/stella/vms/sla', methods=['POST'])
 def StellaAPI_Set_SLA_VM():
