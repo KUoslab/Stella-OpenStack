@@ -16,7 +16,8 @@ The list of Stella APIs is below.
 
 1. /stella: Check the status of Stella scheduler and Stella-OpenStack.
 2. /stella/vms: Returns the list of VMs and information of each VMs.
-3. /stella/hypervisor: Returns the IP address of the hypervisor host. 'hypervisor_name' field is essential.
+3. /stella/vms/sla: Set SLA for VM. Use instance name in horizon as a Input
+4. /stella/hypervisor: Returns the IP address of the hypervisor host. 'hypervisor_name' field is essential.
 
 ## contact
 email: starlab@os.korea.ac.kr
