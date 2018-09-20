@@ -36,16 +36,90 @@ class VM_info:
     def print_num(self):
         return len(self._list_vms) + 1
 
-    def set_info(self, _vm_name, _instance_name, _project_id, _hypervisor_name, _hypervisor_ip):
+    def set_info(self, _vm_name, _instance_name, _project_id, _hypervisor_name, _hypervisor_ip, _sla_option,
+                 _sla_value):
         # Key for VMs list
         num = len(self._list_vms)
         # Add to VMs list
         # self._list_vms[num] = [_vm_name, _instance_name, _project_id, _hypervisor_name, _hypervisor_ip]
         self._list_vms[num] = {'vm_name': _vm_name, 'instance_name': _instance_name, 'project_id': _project_id,
-                               'hypervisor_name': _hypervisor_name, 'hypervisor_ip': _hypervisor_ip}
+                               'hypervisor_name': _hypervisor_name, 'hypervisor_ip': _hypervisor_ip,
+                               'SLA_Option': _sla_option, 'SLA_Value': _sla_value}
         # _tmp = [ _vm_name, _instance_name, _project_id, _hypervisor_name, _hypervisor_ip]
         # self._vm_info.append(_tmp)
         return len(self._list_vms)
+
+    def print_SLA(self, _name):
+        count = -1
+        for tmp in self._list_vms:
+            # print(self._list_vms[tmp])
+            if _name in self._list_vms[tmp]["vm_name"]:
+                count = tmp
+                break
+            else:
+                print("N")
+        # print SLA_option and SLA_Value
+        # print(self._list_vms[tmp]["vm_name"])
+        # print(self._list_vms[count]["SLA_Option"])
+        # print(self._list_vms[count]["SLA_Value"])
+
+        # return self._list_vms['vm_name']
+
+    def get_instance_name_by_name(self, _name):
+        count = -1
+        for count in self._list_vms:
+            # print(self._list_vms[tmp])
+            # print(count)
+            if _name in self._list_vms[count]["vm_name"]:
+                _instance_name = self._list_vms[count]["instance_name"]
+                count = count
+                # print("break")
+                break
+        return _instance_name
+
+    def get_sla_option_by_name(self, _name):
+        count = -1
+        for count in self._list_vms:
+            # print(self._list_vms[tmp])
+            # print(count)
+            if _name in self._list_vms[count]["vm_name"]:
+                _sla_option = self._list_vms[count]["SLA_Option"]
+                count = count
+                # print("break")
+                break
+        return _sla_option
+
+    def get_sla_value_by_name(self, _name):
+        count = -1
+        for count in self._list_vms:
+            # print(self._list_vms[tmp])
+            # print(count)
+            if _name in self._list_vms[count]["vm_name"]:
+                _sla_value = self._list_vms[count]["SLA_Value"]
+                count = count
+                # print("break")
+                break
+        return _sla_value
+
+    def set_SLA(self, _name, _SLA_Option, _SLA_Value):
+        count = -1
+        for count in self._list_vms:
+            # print(self._list_vms[tmp])
+            # print(count)
+            if _name in self._list_vms[count]["vm_name"]:
+                # print(self._list_vms[count]["vm_name"])
+                count = count
+                # print("break")
+                break
+        # print SLA_option and SLA_Value
+        # print(self._list_vms[count]["vm_name"])
+        self._list_vms[count].update(SLA_Option=_SLA_Option)
+        # print(self._list_vms[count]["SLA_Option"])
+        # self._list_vms[count]['SLA_Option']: _SLA_Option
+        self._list_vms[count].update(SLA_Value=_SLA_Value)
+        # print(self._list_vms[count]["SLA_Value"])
+
+        return count
 
 
 #    def get_info(self, _vm_name ):
@@ -98,11 +172,51 @@ vms = VM_info
 def StellaAPI_Status():
     return "Stella-OpenStack is ON"
 
-
 @app.route('/stella/vms', methods=['GET'])
 def StellaAPI_listVMs():
     return jsonify(vms.print_all(vms))
 
+
+@app.route('/stella/vms/sla', methods=['POST'])
+def StellaAPI_Set_SLA_VM():
+    if not request.json or not 'name' in request.json:
+        abort(400)
+    if not request.json or not 'SLA_Option' in request.json:
+        abort(400)
+    if not request.json or not 'SLA_Value' in request.json:
+        abort(400)
+
+    _name = request.json['name']
+    _SLA_option = request.json['SLA_Option']
+    _SLA_value = request.json['SLA_Value']
+
+    count = vms.set_SLA(vms, _name, _SLA_option, _SLA_value)
+    instance_name = vms.get_instance_name_by_name(vms, _name)
+    sla_option = vms.get_sla_option_by_name(vms, _name)
+    sla_value = vms.get_sla_value_by_name(vms, _name)
+    # print(instance_name)
+
+    # get_ROOT privilege
+    olduid = 0
+    if os.geteuid() != 0:
+        # running as normal user
+        olduid = os.geteuid()
+        print(olduid)
+        os.seteuid(0)
+
+    # execute SLA setting script
+    cmd_str = './insert_sla.sh' + ' ' + instance_name + ' ' + sla_option + ' ' + sla_value
+    print(cmd_str)
+    os.system(cmd_str)
+
+    # reset user privilege
+    if olduid != 0:
+        os.seteuid(olduid)
+
+    if (count < 0):
+        return jsonify({'message': 'error'})
+    else:
+        return jsonify(vms.print_all(vms))
 
 @app.route('/stella/hypervisor', methods=['POST'])
 def StellaAPI_SearchHypervisorsByName():
@@ -110,9 +224,8 @@ def StellaAPI_SearchHypervisorsByName():
         abort(400)
     else:
         _name = request.json['name']
-        # hypervisors.get_data(hypervisors, _name)
+        hypervisors.get_data(hypervisors, _name)
         return jsonify({'hypervisor_ip': hypervisors.get_data(hypervisors, _name)})
-
 
 #
 # Stella-OpenStack API list end
@@ -183,7 +296,7 @@ if __name__ == '__main__':
     # print(hypervisors.print_num(hypervisors))
     count = 0
     for index in list_hypervisor_name:
-        # print(index)
+        print(index)
         list_hypervisor = {list_hypervisor_name[count]: list_hypervisor_ip[count]}
         hypervisors.set_data(hypervisors, list_hypervisor_name[count], list_hypervisor_ip[count])
         count = count + 1
@@ -202,11 +315,12 @@ if __name__ == '__main__':
         # print("HOST_ID: " + VM.host_id)
         # print(vms.print_num(vms))
         ip = hypervisors.get_data(hypervisors, VM.hypervisor_hostname)
-        vms.set_info(vms, VM.name, VM.instance_name, VM.project_id, VM.hypervisor_hostname, ip)
+        vms.set_info(vms, VM.name, VM.instance_name, VM.project_id, VM.hypervisor_hostname, ip, '-', '-')
 
-    # vms.print_all(vms)
+    # vms.print_SLA(vms, "stella_test-3")
+    # vms.set_SLA(vms, "stella_test-3", 'b_bw', '100000')
 
-    #    print(VM)
+    # print(VM)
 
     # hypervisor_list_name = " "
     # hypervisor_list_ip = " "
