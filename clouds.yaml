@@ -1,0 +1,12 @@
+clouds:
+  Stella:
+    auth:
+      auth_url: http://Controller:5000
+      password: ADMIN_PASS
+      project_domain_id: default
+      project_name: admin
+      user_domain_id: default
+      username: admin
+    identity_api_version: '3'
+    region_name: RegionOne
+    volume_api_version: '2'

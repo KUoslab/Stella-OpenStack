@@ -19,7 +19,7 @@ utils.enable_logging(True, stream=sys.stdout)
 #: typically in $HOME/.config/openstack/clouds.yaml. That configuration
 #: will determine where the examples will be run and what resource defaults
 #: will be used to run the examples.
-STELLA_CLOUD = os.getenv('OS_CLOUD', 'Stella-DevStack')
+STELLA_CLOUD = os.getenv('OS_CLOUD', 'Stella')
 config = loader.OpenStackConfig()
 CLOUD = openstack.connect(cloud=STELLA_CLOUD)
 

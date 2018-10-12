@@ -358,4 +358,4 @@ if __name__ == '__main__':
     # print(VM_info)
 
     # run API server
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
