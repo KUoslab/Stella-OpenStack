@@ -1,0 +1,61 @@
+# Add patterns in here to exclude files created by tools integrated with this
+# repository, such as test frameworks from the project's recommended workflow,
+# rendered documentation and package builds.
+#
+# Don't add patterns to exclude files created by preferred personal tools
+# (editors, IDEs, your operating system itself even). These should instead be
+# maintained outside the repository, for example in a ~/.gitignore file added
+# with:
+#
+# git config --global core.excludesfile '~/.gitignore'
+
+# Bytecompiled Python
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg*
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+cover/
+.coverage*
+!.coveragerc
+.tox
+nosetests.xml
+.testrepository
+.stestr
+.venv
+
+# Translations
+*.mo
+
+# Complexity
+output/*.html
+output/*/index.html
+
+# Sphinx
+doc/build
+
+# pbr generates these
+AUTHORS
+ChangeLog
+
+# Files created by releasenotes build
+releasenotes/build
