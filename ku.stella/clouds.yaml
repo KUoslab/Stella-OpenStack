@@ -1,8 +1,8 @@
 clouds:
   Stella:
     auth:
-      auth_url: http://Controller:5000
-      password: ADMIN_PASS
+      auth_url: http://controller:35357/v3
+      password: pass
       project_domain_id: default
       project_name: admin
       user_domain_id: default

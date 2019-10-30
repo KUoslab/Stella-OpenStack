@@ -177,6 +177,19 @@ def StellaAPI_Status():
 def StellaAPI_listVMs():
     return jsonify(vms.print_all(vms))
 
+@app.route('/stella/vms/filter', methods=['POST'])
+def StellaAPI_Filter():
+    if not request.json or not 'name' in request.json:
+        abort(400)
+    if not request.json or not 'SLA_Option' in request.json:
+        abort(400)
+    if not request.json or not 'SLA_Value' in request.json:
+        abort(400)
+
+    _name = request.json['name']
+    _SLA_option = request.json['SLA_Option']
+    _SLA_value = request.json['SLA_Value']
+
 @app.route('/stella/vms/sla', methods=['POST'])
 def StellaAPI_Set_SLA_VM():
     if not request.json or not 'name' in request.json:
@@ -358,4 +371,5 @@ if __name__ == '__main__':
     # print(VM_info)
 
     # run API server
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5001, debug=True)
+#    app.run(host='163.152.20.140')

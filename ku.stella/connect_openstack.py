@@ -13,7 +13,7 @@ import openstack
 from openstack import utils
 from openstack.config import loader
 
-utils.enable_logging(True, stream=sys.stdout)
+#utils.enable_logging(True, stream=sys.stdout)
 
 #: Defines the OpenStack Config loud key in your config file,
 #: typically in $HOME/.config/openstack/clouds.yaml. That configuration
