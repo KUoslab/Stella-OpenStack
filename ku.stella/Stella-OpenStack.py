@@ -129,7 +129,7 @@ class hypervisor_info:
     _list_hypervisor = {}
 
     def set_data(self, _name, _ip):
-        self._list_hypervisor[_name] = _ip
+        self._list_hypervisor[_name] = {'IP': _ip, 'idleC': 1000, 'idleN': 10000, 'idleD': 400000}
 
     def get_data(self, _name):
         return self._list_hypervisor[_name]
