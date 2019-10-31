@@ -129,10 +129,10 @@ class hypervisor_info:
     _list_hypervisor = {}
 
     def set_data(self, _name, _ip):
-        self._list_hypervisor[_name] = {'IP': _ip, 'idleC': 1000, 'idleN': 10000, 'idleD': 400000}
+        self._list_hypervisor[_name] = {'IP': _ip, 'c_usage': 1000, 'n_maxcredit': 10000, 'b_bw': 400000}
 
     def get_data(self, _name):
-        return self._list_hypervisor[_name]
+        return self._list_hypervisor[_name]["IP"]
 
 
 class Stella_OpenStack(Resource):
@@ -163,7 +163,7 @@ class Stella_OpenStack(Resource):
 # global variables
 hypervisors = hypervisor_info
 vms = VM_info
-
+list_hypervisor_name = []
 # Stella-OpenStack API list
 # /stella : Check status of Stella scheduler and Stella-OpenStack
 # /stella/vms : Returns the list of VMs and information of each VMs
@@ -189,6 +189,16 @@ def StellaAPI_Filter():
     _name = request.json['name']
     _SLA_option = request.json['SLA_Option']
     _SLA_value = request.json['SLA_Value']
+
+    count = 0
+    for index in list_hypervisor_name:
+        host = list_hypervisor_name[count]
+        idle = _list_hypervisor["host"]["_SLA_option"]
+        if _SLA_value < idle
+            _list_hypervisor["host"]["_SLA_option"] = idle - _SLA_value
+            return host
+        else
+            count = count + 1
 
 @app.route('/stella/vms/sla', methods=['POST'])
 def StellaAPI_Set_SLA_VM():
@@ -293,7 +303,7 @@ if __name__ == '__main__':
 
     Stella.logger.info("STELLA: listing hypervisor")
 
-    list_hypervisor_name = []
+#    list_hypervisor_name = []
     list_hypervisor_ip = []
     # list_hypervisor = {}
 
