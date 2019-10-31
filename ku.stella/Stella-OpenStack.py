@@ -197,7 +197,7 @@ def StellaAPI_Filter():
 
     for index in list_hypervisor_name:
         idle = hypervisors.get_capacity(hypervisors, index, _SLA_option)
-        if _SLA_value < idle:
+        if int(_SLA_value) < idle:
             hypervisors["index"]["_SLA_option"] = idle - int(_SLA_value)
             return index
 
