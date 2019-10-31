@@ -132,6 +132,12 @@ class hypervisor_info:
     def get_data(self, _name):
         return self._list_hypervisor[_name]["IP"]
 
+    def set_capacity(self, _name, _type, _value):
+        self._list_hypervisor[_name].update(_type=_value)
+
+    def get_capacity(self, _name, _type):
+        return self._list_hypervisor[_name][_type]
+
 # global variables
 hypervisors = hypervisor_info
 vms = VM_info
@@ -190,9 +196,9 @@ def StellaAPI_Filter():
     _SLA_value = request.json['SLA_Value']
 
     for index in list_hypervisor_name:
-        idle = _list_hypervisor["index"]["_SLA_option"]
+        idle = hypervisors.get_capacity(self, index, _SLA_option)
         if _SLA_value < idle:
-            _list_hypervisor["index"]["_SLA_option"] = idle - _SLA_value
+            hypervisors["index"]["_SLA_option"] = idle - _SLA_value
             return index
 
 @app.route('/stella/vms/sla', methods=['POST'])
