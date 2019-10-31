@@ -197,7 +197,7 @@ def StellaAPI_Filter():
         if _SLA_value < idle:
             _list_hypervisor["host"]["_SLA_option"] = idle - _SLA_value
             return host
-        else
+        else:
             count = count + 1
 
 @app.route('/stella/vms/sla', methods=['POST'])
