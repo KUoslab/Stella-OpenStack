@@ -19,10 +19,6 @@ Stella-OpenStack Conment main file
 - by jmlim@os.korea.ac.kr
 
 """
-# global variables
-hypervisors = hypervisor_info
-vms = VM_info
-
 class VM_info:
     _list_vms = {}
 
@@ -136,6 +132,9 @@ class hypervisor_info:
     def get_data(self, _name):
         return self._list_hypervisor[_name]["IP"]
 
+# global variables
+hypervisors = hypervisor_info
+vms = VM_info
 
 class Stella_OpenStack(Resource):
 
