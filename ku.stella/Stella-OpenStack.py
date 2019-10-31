@@ -19,7 +19,9 @@ Stella-OpenStack Conment main file
 - by jmlim@os.korea.ac.kr
 
 """
-
+# global variables
+hypervisors = hypervisor_info
+vms = VM_info
 
 class VM_info:
     _list_vms = {}
@@ -160,10 +162,7 @@ class Stella_OpenStack(Resource):
         self.logger.info("STELLA: STOP")
 
 
-# global variables
-hypervisors = hypervisor_info
-vms = VM_info
-list_hypervisor_name = []
+
 # Stella-OpenStack API list
 # /stella : Check status of Stella scheduler and Stella-OpenStack
 # /stella/vms : Returns the list of VMs and information of each VMs
@@ -190,15 +189,11 @@ def StellaAPI_Filter():
     _SLA_option = request.json['SLA_Option']
     _SLA_value = request.json['SLA_Value']
 
-    count = 0
-    for index in list_hypervisor_name:
-        host = list_hypervisor_name[count]
-        idle = _list_hypervisor["host"]["_SLA_option"]
+    for index in hypervisors:
+        idle = _list_hypervisor["index"]["_SLA_option"]
         if _SLA_value < idle:
-            _list_hypervisor["host"]["_SLA_option"] = idle - _SLA_value
-            return host
-        else:
-            count = count + 1
+            _list_hypervisor["index"]["_SLA_option"] = idle - _SLA_value
+            return index
 
 @app.route('/stella/vms/sla', methods=['POST'])
 def StellaAPI_Set_SLA_VM():
@@ -303,7 +298,7 @@ if __name__ == '__main__':
 
     Stella.logger.info("STELLA: listing hypervisor")
 
-#    list_hypervisor_name = []
+    list_hypervisor_name = []
     list_hypervisor_ip = []
     # list_hypervisor = {}
 
