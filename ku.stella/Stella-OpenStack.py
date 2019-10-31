@@ -135,6 +135,7 @@ class hypervisor_info:
 # global variables
 hypervisors = hypervisor_info
 vms = VM_info
+list_hypervisor_name = []
 
 class Stella_OpenStack(Resource):
 
@@ -188,7 +189,7 @@ def StellaAPI_Filter():
     _SLA_option = request.json['SLA_Option']
     _SLA_value = request.json['SLA_Value']
 
-    for index in hypervisors:
+    for index in list_hypervisor_name:
         idle = _list_hypervisor["index"]["_SLA_option"]
         if _SLA_value < idle:
             _list_hypervisor["index"]["_SLA_option"] = idle - _SLA_value
@@ -297,7 +298,7 @@ if __name__ == '__main__':
 
     Stella.logger.info("STELLA: listing hypervisor")
 
-    list_hypervisor_name = []
+#    list_hypervisor_name = []
     list_hypervisor_ip = []
     # list_hypervisor = {}
 
