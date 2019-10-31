@@ -194,7 +194,7 @@ def StellaAPI_Filter():
     for index in list_hypervisor_name:
         host = list_hypervisor_name[count]
         idle = _list_hypervisor["host"]["_SLA_option"]
-        if _SLA_value < idle
+        if _SLA_value < idle:
             _list_hypervisor["host"]["_SLA_option"] = idle - _SLA_value
             return host
         else
