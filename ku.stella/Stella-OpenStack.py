@@ -120,9 +120,6 @@ class VM_info:
         return count
 
 
-#    def get_info(self, _vm_name ):
-#        _tmp =
-
 class hypervisor_info:
     _list_hypervisor = {}
     def print_all(self):
@@ -139,6 +136,17 @@ class hypervisor_info:
 
     def get_capacity(self, _name, _type):
         return self._list_hypervisor[_name][_type]
+
+    def get_weight(self, _name, _type):
+        tmp = self.get_capacity(self, _name, _type)
+        if _type == 'c_usage':
+            cap = 1000
+        elif _type == 'n_maxcredit':
+            cap = 10000
+        else:
+            cap = 400000
+        weight = ((cap - tmp)/cap)*100
+        return weight
 
 # global variables
 hypervisors = hypervisor_info
@@ -192,7 +200,7 @@ def StellaAPI_Filter():
         abort(400)
     if not request.json or not 'SLA_Value' in request.json:
         abort(400)
-
+    _available_hosts = []
     _name = request.json['name']
     _SLA_option = request.json['SLA_Option']
     _SLA_value = request.json['SLA_Value']
@@ -200,10 +208,22 @@ def StellaAPI_Filter():
     for index in list_hypervisor_name:
         idle = hypervisors.get_capacity(hypervisors, index, _SLA_option)
         if int(_SLA_value) < idle:
-            new_idle = idle - int(_SLA_value)
-            hypervisors.set_capacity(hypervisors, index, _SLA_option, new_idle)
-            print(hypervisors.print_all(hypervisors))
-        return index
+            _available_hosts.append(index)
+#            new_idle = idle - int(_SLA_value)
+#            hypervisors.set_capacity(hypervisors, index, _SLA_option, new_idle)
+#            print(hypervisors.print_all(hypervisors))
+
+    for index in _available_hosts:
+        if _SLA_option == 'c_usage':
+            w1 = hypervisors.get_weight(self, index, 'n_maxcredit')
+            w2 = hypervisors.get_weight(self, index, 'b_bw')
+        elif _SLA_option == 'n_maxcredit':
+            w1 = hypervisors.get_weight(self, index, 'c_usage')
+            w2 = hypervisors.get_weight(self, index, 'b_bw')
+        else:
+            w1 = hypervisors.get_weight(self, index, 'c_usage')
+            w2 = hypervisors.get_weight(self, index, 'n_maxcredit')
+
 
 @app.route('/stella/vms/sla', methods=['POST'])
 def StellaAPI_Set_SLA_VM():
