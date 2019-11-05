@@ -202,7 +202,8 @@ def StellaAPI_Filter():
         if int(_SLA_value) < idle:
             new_idle = idle - int(_SLA_value)
             hypervisors.set_capacity(hypervisors, index, _SLA_option, new_idle)
-            return index
+            print(hypervisors.print_all(hypervisors))
+        return index
 
 @app.route('/stella/vms/sla', methods=['POST'])
 def StellaAPI_Set_SLA_VM():
