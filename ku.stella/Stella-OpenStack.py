@@ -125,6 +125,8 @@ class VM_info:
 
 class hypervisor_info:
     _list_hypervisor = {}
+    def print_all(self):
+        return self._list_hypervisor
 
     def set_data(self, _name, _ip):
         self._list_hypervisor[_name] = {'IP': _ip, 'c_usage': 1000, 'n_maxcredit': 10000, 'b_bw': 400000}
@@ -326,7 +328,7 @@ if __name__ == '__main__':
         hypervisors.set_data(hypervisors, list_hypervisor_name[count], list_hypervisor_ip[count])
         count = count + 1
     # for debugging
-        hypervisors.print_all(hypervisors)
+        print(hypervisors.print_all(hypervisors))
     # print(hypervisors.print_num(hypervisors))
 
     # Storing VM information
