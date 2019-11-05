@@ -321,12 +321,12 @@ if __name__ == '__main__':
     # print(hypervisors.print_num(hypervisors))
     count = 0
     for index in list_hypervisor_name:
-        print(index)
+    #    print(index)
         list_hypervisor = {list_hypervisor_name[count]: list_hypervisor_ip[count]}
         hypervisors.set_data(hypervisors, list_hypervisor_name[count], list_hypervisor_ip[count])
         count = count + 1
     # for debugging
-    # hypervisors.print_all(hypervisors)
+        hypervisors.print_all(hypervisors)
     # print(hypervisors.print_num(hypervisors))
 
     # Storing VM information
