@@ -200,29 +200,35 @@ def StellaAPI_Filter():
         abort(400)
     if not request.json or not 'SLA_Value' in request.json:
         abort(400)
-    _available_hosts = []
+    _available_hosts = {}
+    # tmp = {host_name, weight}
     _name = request.json['name']
     _SLA_option = request.json['SLA_Option']
     _SLA_value = request.json['SLA_Value']
 
+    count = 0
     for index in list_hypervisor_name:
         idle = hypervisors.get_capacity(hypervisors, index, _SLA_option)
         if int(_SLA_value) < idle:
-            _available_hosts.append(index)
+            if _SLA_option == 'c_usage':
+                w1 = hypervisors.get_weight(self, index, 'n_maxcredit')
+                w2 = hypervisors.get_weight(self, index, 'b_bw')
+            elif _SLA_option == 'n_maxcredit':
+                w1 = hypervisors.get_weight(self, index, 'c_usage')
+                w2 = hypervisors.get_weight(self, index, 'b_bw')
+            else:
+                w1 = hypervisors.get_weight(self, index, 'c_usage')
+                w2 = hypervisors.get_weight(self, index, 'n_maxcredit')
+
+            _available_hosts[count]={'host_name': index, 'weight': w1+w2}
+            sorted(_available_hosts, key=lambda hosts: _available_hosts[2])
+            print(hosts)
 #            new_idle = idle - int(_SLA_value)
 #            hypervisors.set_capacity(hypervisors, index, _SLA_option, new_idle)
 #            print(hypervisors.print_all(hypervisors))
 
-    for index in _available_hosts:
-        if _SLA_option == 'c_usage':
-            w1 = hypervisors.get_weight(self, index, 'n_maxcredit')
-            w2 = hypervisors.get_weight(self, index, 'b_bw')
-        elif _SLA_option == 'n_maxcredit':
-            w1 = hypervisors.get_weight(self, index, 'c_usage')
-            w2 = hypervisors.get_weight(self, index, 'b_bw')
-        else:
-            w1 = hypervisors.get_weight(self, index, 'c_usage')
-            w2 = hypervisors.get_weight(self, index, 'n_maxcredit')
+
+
 
 
 @app.route('/stella/vms/sla', methods=['POST'])
