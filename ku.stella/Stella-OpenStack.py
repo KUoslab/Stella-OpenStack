@@ -211,14 +211,14 @@ def StellaAPI_Filter():
         idle = hypervisors.get_capacity(hypervisors, index, _SLA_option)
         if int(_SLA_value) < idle:
             if _SLA_option == 'c_usage':
-                w1 = hypervisors.get_weight(self, index, 'n_maxcredit')
-                w2 = hypervisors.get_weight(self, index, 'b_bw')
+                w1 = hypervisors.get_weight(hypervisors, index, 'n_maxcredit')
+                w2 = hypervisors.get_weight(hypervisors, index, 'b_bw')
             elif _SLA_option == 'n_maxcredit':
-                w1 = hypervisors.get_weight(self, index, 'c_usage')
-                w2 = hypervisors.get_weight(self, index, 'b_bw')
+                w1 = hypervisors.get_weight(hypervisors, index, 'c_usage')
+                w2 = hypervisors.get_weight(hypervisors, index, 'b_bw')
             else:
-                w1 = hypervisors.get_weight(self, index, 'c_usage')
-                w2 = hypervisors.get_weight(self, index, 'n_maxcredit')
+                w1 = hypervisors.get_weight(hypervisors, index, 'c_usage')
+                w2 = hypervisors.get_weight(hypervisors, index, 'n_maxcredit')
 
             _available_hosts[count]={'host_name': index, 'weight': w1+w2}
             sorted(_available_hosts, key=lambda hosts: _available_hosts[2])
@@ -226,10 +226,7 @@ def StellaAPI_Filter():
 #            new_idle = idle - int(_SLA_value)
 #            hypervisors.set_capacity(hypervisors, index, _SLA_option, new_idle)
 #            print(hypervisors.print_all(hypervisors))
-
-
-
-
+    return index
 
 @app.route('/stella/vms/sla', methods=['POST'])
 def StellaAPI_Set_SLA_VM():
