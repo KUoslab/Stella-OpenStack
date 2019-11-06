@@ -221,8 +221,8 @@ def StellaAPI_Filter():
                 w2 = hypervisors.get_weight(hypervisors, index, 'n_maxcredit')
 
             _available_hosts[count]={'host_name': index, 'weight': w1+w2}
-            sorted(_available_hosts, key=lambda hosts: _available_hosts[2])
-            print(hosts)
+            sorted(_available_hosts, key=lambda _available_hosts: _available_hosts[2])
+            print(_available_hosts)
 #            new_idle = idle - int(_SLA_value)
 #            hypervisors.set_capacity(hypervisors, index, _SLA_option, new_idle)
 #            print(hypervisors.print_all(hypervisors))
