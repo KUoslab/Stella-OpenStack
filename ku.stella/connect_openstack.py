@@ -1,3 +1,5 @@
+# This work is done by Operating System Labs.
+
 """
 This file defines wrapper to connect OpenStack cloud
 assume that we use DevStack for configuration file
