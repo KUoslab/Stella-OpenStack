@@ -127,6 +127,7 @@ class VM_info:
 #    def get_info(self, _vm_name ):
 #        _tmp =
 
+# for Hyperbisor info
 class hypervisor_info:
     _list_hypervisor = {}
 
