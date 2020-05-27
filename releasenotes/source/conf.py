@@ -35,6 +35,7 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 # This work is done by Operating System Labs
+# extentions
 extensions = [
     'openstackdocstheme',
     'reno.sphinxext',
