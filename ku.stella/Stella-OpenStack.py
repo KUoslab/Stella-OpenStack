@@ -1,4 +1,4 @@
-# This work is done by Operating System Labs.
+# This work is done by Operating System Lab
 
 import argparse
 import logging
