@@ -1,4 +1,4 @@
-# This work is done by Operating System Lab
+# This work is done by Operating System Lab.
 
 """
 This file defines wrapper to connect OpenStack cloud
